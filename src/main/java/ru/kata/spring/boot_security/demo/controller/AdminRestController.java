@@ -2,8 +2,10 @@ package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -12,11 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import ru.kata.spring.boot_security.demo.models.PersonDetails;
+import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
 
-@RestController                         // @Controller + @ResponseBody на каждом методе
+@RestController
 @RequestMapping("/api/admin")
 public class AdminRestController {
 
@@ -28,42 +32,56 @@ public class AdminRestController {
         this.roleService = roleService;
     }
 
-    // GET /api/admin/users — список всех пользователей
-    @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.findAll();
-        return ResponseEntity.ok(users);                        // 200 OK + тело
+    @GetMapping("/showAccount/")
+    public ResponseEntity<User> getCurrentAdmin(
+            @AuthenticationPrincipal PersonDetails personDetails) {
+        if (personDetails == null) {
+            return ResponseEntity.status(401).build();
+        }
+        return ResponseEntity.ok(personDetails.getPersson());
     }
 
-    // GET /api/admin/users/{id} — один пользователь
+    @GetMapping("/roles")
+    public ResponseEntity<List<Role>> getAllRoles() {
+        return ResponseEntity.ok(roleService.findAll());
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.findAll());
+    }
+
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         User user = userService.findById(id);
         if (user == null) {
-            return ResponseEntity.notFound().build();           // 404
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(user);                        // 200 OK
+        return ResponseEntity.ok(user);
     }
 
-    // POST /api/admin/users — создать пользователя
-    // Тело запроса в POSTMAN: Body → raw → JSON
-    @PostMapping("/users")
+    @PostMapping("/users/")
     public ResponseEntity<User> createUser(@RequestBody User user) {
         userService.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(user); // 201 Created
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
-    // PUT /api/admin/users — обновить пользователя (передаём id внутри тела)
     @PutMapping("/users")
     public ResponseEntity<User> updateUser(@RequestBody User user) {
         userService.updateUser(user);
-        return ResponseEntity.ok(user);                        // 200 OK
+        return ResponseEntity.ok(user);
     }
 
-    // DELETE /api/admin/users/{id} — удалить пользователя
+    @PatchMapping("/users/{id}")
+    public ResponseEntity<User> patchUser(@PathVariable Long id, @RequestBody User user) {
+        user.setId(id);
+        userService.updateUser(user);
+        return ResponseEntity.ok(user);
+    }
+
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.delete(id);
-        return ResponseEntity.noContent().build();             // 204 No Content
+        return ResponseEntity.noContent().build();
     }
 }

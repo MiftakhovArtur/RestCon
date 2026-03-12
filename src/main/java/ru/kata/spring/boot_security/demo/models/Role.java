@@ -47,6 +47,10 @@ public class Role {
         this.users = users;
     }
 
+    public String getNameOfRole() {
+        return name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

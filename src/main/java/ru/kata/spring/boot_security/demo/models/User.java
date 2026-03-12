@@ -32,6 +32,15 @@ public class User{
     @Column
     private Integer age;
 
+    @Column
+    private String firstName;
+
+    @Column
+    private String lastName;
+
+    @Column(unique = true)
+    private String email;
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -79,6 +88,30 @@ public class User{
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override

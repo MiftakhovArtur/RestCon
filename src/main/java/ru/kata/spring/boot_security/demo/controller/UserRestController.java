@@ -13,7 +13,7 @@ import ru.kata.spring.boot_security.demo.models.User;
 public class UserRestController {
 
     // GET /api/user/me — текущий авторизованный пользователь
-    @GetMapping("/me")
+    @GetMapping("/showAccount")
     public ResponseEntity<User> getCurrentUser(
             @AuthenticationPrincipal PersonDetails personDetails) {
         if (personDetails == null) {
