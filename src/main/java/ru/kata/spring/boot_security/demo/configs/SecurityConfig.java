@@ -17,8 +17,11 @@ public class SecurityConfig {
 
     private final PersonDetailsService personDetailsService;
 
-    public SecurityConfig(PersonDetailsService personDetailsService) {
+    private final SuccessUserHandler successUserHandler;
+
+    public SecurityConfig(PersonDetailsService personDetailsService, SuccessUserHandler successUserHandler) {
         this.personDetailsService = personDetailsService;
+        this.successUserHandler = successUserHandler;
     }
 
     @Bean
@@ -40,11 +43,14 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/**").hasRole("ADMIN")
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/user/**", "/api/user/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
-                .formLogin(withDefaults())
+                .formLogin(form -> form
+                        .usernameParameter("email")
+                        .successHandler(successUserHandler)
+                )
                 .httpBasic(withDefaults());
 
         return http.build();

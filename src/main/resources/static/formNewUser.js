@@ -21,6 +21,7 @@ function createNewUser() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                username: formNewUser.username.value,
                 firstName: formNewUser.firstName.value,
                 lastName: formNewUser.lastName.value,
                 age: formNewUser.age.value,

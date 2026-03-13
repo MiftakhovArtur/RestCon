@@ -38,12 +38,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(Long id) {
-        return userRepository.findById(id);
+        User user = userRepository.findById(id);
+        if (user != null) {
+            user.getRoles().size();
+        }
+        return user;
     }
 
     @Override
     public List<User> findAll() {
-        return userRepository.findAll();
+        List<User> users = userRepository.findAll();
+        users.forEach(u -> u.getRoles().size());
+        return users;
     }
 
     @Override

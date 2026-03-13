@@ -1,4 +1,4 @@
-const URLTableUsers = 'http://localhost:8080/api/admin/users/';
+const URLTableUsers = 'http://localhost:8080/api/admin/users';
 
 getAllUsers();
 
