@@ -28,6 +28,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(User user) {
+        User existing = userRepository.findById(user.getId());
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            user.setPassword(existing.getPassword());
+        } else {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         userRepository.update(user);
     }
 

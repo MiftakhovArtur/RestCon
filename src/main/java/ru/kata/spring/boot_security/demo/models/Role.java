@@ -4,9 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+//import jakarta.persistence.Transient;
 import java.util.Objects;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "roles")
@@ -16,7 +17,9 @@ public class Role {
     @Id
     private Long id;
     private String name;
-    @Transient
+//    @Transient
+//    удалил потому что они конфликатовали, нужна была связь которая не игнорировала бы поле
+    @JsonIgnore
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
 

@@ -7,10 +7,9 @@ console.log({formEdit, buttonSubmit});
 const URLEdit = "http://localhost:8080/api/admin/users/";
 
 async function editModal(id) {
-    console.log("Edit Modal");
     const modalEdit = new bootstrap.Modal(document.querySelector('#editModal'));
-    await open_fill_modal(formEdit, modalEdit, id);
     await loadRolesForEdit();
+    await open_fill_modal(formEdit, modalEdit, id);
 }
 
 function editUser() {
